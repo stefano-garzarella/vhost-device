@@ -37,9 +37,13 @@ pub fn init_logger() {
     let _ = env_logger::builder().is_test(true).try_init();
 }
 
+#[cfg(target_env = "gnu")]
 pub mod audio_backends;
+#[cfg(target_env = "gnu")]
 pub mod device;
+#[cfg(target_env = "gnu")]
 pub mod stream;
+#[cfg(target_env = "gnu")]
 pub mod virtio_sound;
 
 use std::{

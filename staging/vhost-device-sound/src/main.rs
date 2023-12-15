@@ -6,6 +6,7 @@ use std::convert::TryFrom;
 use clap::Parser;
 use vhost_device_sound::{start_backend_server, BackendType, Error, Result, SoundConfig};
 
+#[cfg(target_env = "gnu")]
 #[derive(Parser, Debug)]
 #[clap(version, about, long_about = None)]
 struct SoundArgs {
@@ -18,6 +19,7 @@ struct SoundArgs {
     backend: BackendType,
 }
 
+#[cfg(target_env = "gnu")]
 impl TryFrom<SoundArgs> for SoundConfig {
     type Error = Error;
 
@@ -28,6 +30,7 @@ impl TryFrom<SoundArgs> for SoundConfig {
     }
 }
 
+#[cfg(target_env = "gnu")]
 fn main() {
     env_logger::init();
 
@@ -93,3 +96,10 @@ mod tests {
         assert_eq!(config.get_audio_backend(), backend);
     }
 }
+
+// Rust vmm container (https://github.com/rust-vmm/rust-vmm-container) doesn't
+// have tools to do a musl build at the moment, and adding that support is
+// tricky as well to the container. Skip musl builds until the time pre-built
+// of alsa and pipewire libraries are available for musl.
+#[cfg(target_env = "musl")]
+fn main() {}
